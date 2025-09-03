@@ -1,4 +1,4 @@
 # ShieldLite
 MyFirst Project
 <br>
-auther = Mohammad Ziyaouddin
+auther = Mohammad Ziyaouddin(name)
