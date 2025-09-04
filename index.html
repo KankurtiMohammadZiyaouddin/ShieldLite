@@ -1,0 +1,590 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShieldLite - AI Cybersecurity for Small Business</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 48px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .card-icon {
+            font-size: 2rem;
+            margin-right: 15px;
+            color: #667eea;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .security-score {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            color: white;
+            background: conic-gradient(#4CAF50 0% 75%, #e0e0e0 75% 100%);
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .input-group input, .input-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .input-group input:focus, .input-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4);
+        }
+
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .result.safe {
+            background: #e8f5e8;
+            border-left: 4px solid #4CAF50;
+            color: #2e7d32;
+        }
+
+        .result.warning {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            color: #856404;
+        }
+
+        .result.danger {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            color: #721c24;
+        }
+
+        .chat-container {
+            height: 300px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            background: #f8f9fa;
+        }
+
+        .chat-message {
+            margin-bottom: 10px;
+            padding: 10px 15px;
+            border-radius: 18px;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+
+        .chat-message.user {
+            background: #667eea;
+            color: white;
+            margin-left: auto;
+        }
+
+        .chat-message.bot {
+            background: white;
+            color: #333;
+            border: 1px solid #e0e0e0;
+        }
+
+        .chat-input {
+            display: flex;
+            padding: 10px;
+            background: white;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #e0e0e0;
+            border-radius: 20px;
+            margin-right: 10px;
+        }
+
+        .chat-input button {
+            padding: 10px 20px;
+            border: none;
+            background: #667eea;
+            color: white;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+        .tips-list {
+            list-style: none;
+        }
+
+        .tips-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+        }
+
+        .tips-list li:last-child {
+            border-bottom: none;
+        }
+
+        .tips-list li i {
+            color: #4CAF50;
+            margin-right: 10px;
+        }
+
+        .alert-item {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-left: 4px solid #ff9800;
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 15px;
+            }
+            
+            .logo {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">🛡️ ShieldLite</div>
+            <div class="tagline">AI-Powered Cybersecurity for Small Businesses</div>
+        </div>
+
+        <div class="dashboard">
+            <!-- Security Dashboard -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-tachometer-alt card-icon"></i>
+                    <div class="card-title">Security Dashboard</div>
+                </div>
+                <div class="security-score">
+                    <div class="score-circle" id="securityScore">75</div>
+                    <div>Security Score</div>
+                </div>
+                <div class="alert-item">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <strong>Alert:</strong> 2 weak passwords detected
+                </div>
+                <div class="alert-item">
+                    <i class="fas fa-info-circle"></i>
+                    <strong>Tip:</strong> Enable two-factor authentication
+                </div>
+            </div>
+
+            <!-- Phishing Detection -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-shield-alt card-icon"></i>
+                    <div class="card-title">Phishing Detection</div>
+                </div>
+                <div class="input-group">
+                    <label for="emailContent">Paste Email Content:</label>
+                    <textarea id="emailContent" rows="4" placeholder="Paste the email content here to analyze for phishing attempts..."></textarea>
+                </div>
+                <button class="btn" onclick="analyzePhishing()">
+                    <i class="fas fa-search"></i> Analyze Email
+                </button>
+                <div id="phishingResult" class="result"></div>
+            </div>
+
+            <!-- Password Health Checker -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-key card-icon"></i>
+                    <div class="card-title">Password Health Checker</div>
+                </div>
+                <div class="input-group">
+                    <label for="password">Enter Password:</label>
+                    <input type="password" id="password" placeholder="Enter your password">
+                </div>
+                <button class="btn" onclick="checkPassword()">
+                    <i class="fas fa-check"></i> Check Password
+                </button>
+                <div id="passwordResult" class="result"></div>
+            </div>
+
+            <!-- Security Tips -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-lightbulb card-icon"></i>
+                    <div class="card-title">Security Tips</div>
+                </div>
+                <ul class="tips-list">
+                    <li><i class="fas fa-check"></i> Use unique passwords for each account</li>
+                    <li><i class="fas fa-check"></i> Enable two-factor authentication</li>
+                    <li><i class="fas fa-check"></i> Keep software updated</li>
+                    <li><i class="fas fa-check"></i> Be cautious with email attachments</li>
+                    <li><i class="fas fa-check"></i> Regular security backups</li>
+                </ul>
+            </div>
+
+            <!-- AI Chat Assistant -->
+            <div class="card" style="grid-column: 1 / -1;">
+                <div class="card-header">
+                    <i class="fas fa-robot card-icon"></i>
+                    <div class="card-title">AI Security Assistant</div>
+                </div>
+                <div class="chat-container">
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="chat-message bot">
+                            <i class="fas fa-robot"></i> Hi! I'm your AI security assistant. Ask me anything about cybersecurity, password management, or how to protect your business from threats!
+                        </div>
+                    </div>
+                    <div class="chat-input">
+                        <input type="text" id="chatInput" placeholder="Ask about cybersecurity..." onkeypress="handleChatKeypress(event)">
+                        <button onclick="sendMessage()">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Phishing Detection Engine
+        function analyzePhishing() {
+            const content = document.getElementById('emailContent').value.toLowerCase();
+            const result = document.getElementById('phishingResult');
+            
+            if (!content.trim()) {
+                result.className = 'result warning';
+                result.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Please enter email content to analyze.';
+                result.style.display = 'block';
+                return;
+            }
+
+            // Phishing indicators
+            const phishingKeywords = [
+                'urgent', 'immediate action', 'verify account', 'suspend', 'click here',
+                'limited time', 'act now', 'confirm identity', 'update payment',
+                'security alert', 'unusual activity', 'locked account', 'prize',
+                'congratulations', 'winner', 'free money', 'tax refund'
+            ];
+
+            const suspiciousPatterns = [
+                /bit\.ly/gi, /tinyurl/gi, /goo\.gl/gi, // URL shorteners
+                /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}(?=.*[0-9])/gi, // Suspicious emails with numbers
+                /\$[0-9,]+/gi, // Money amounts
+                /click.*here/gi, // Click here patterns
+            ];
+
+            let riskScore = 0;
+            let flags = [];
+
+            // Check for keywords
+            phishingKeywords.forEach(keyword => {
+                if (content.includes(keyword)) {
+                    riskScore += 10;
+                    flags.push(`Contains suspicious phrase: "${keyword}"`);
+                }
+            });
+
+            // Check patterns
+            suspiciousPatterns.forEach(pattern => {
+                if (pattern.test(content)) {
+                    riskScore += 15;
+                    flags.push('Contains suspicious links or patterns');
+                }
+            });
+
+            // Display results
+            if (riskScore >= 30) {
+                result.className = 'result danger';
+                result.innerHTML = `<i class="fas fa-exclamation-triangle"></i> <strong>HIGH RISK:</strong> This email shows multiple phishing indicators. Do not click links or provide personal information.<br><br>Flags detected: ${flags.join(', ')}`;
+            } else if (riskScore >= 10) {
+                result.className = 'result warning';
+                result.innerHTML = `<i class="fas fa-exclamation-triangle"></i> <strong>MODERATE RISK:</strong> This email contains some suspicious elements. Proceed with caution.<br><br>Flags detected: ${flags.join(', ')}`;
+            } else {
+                result.className = 'result safe';
+                result.innerHTML = '<i class="fas fa-check-circle"></i> <strong>LOW RISK:</strong> No obvious phishing indicators detected. However, always remain vigilant!';
+            }
+            
+            result.style.display = 'block';
+        }
+
+        // Password Health Checker
+        function checkPassword() {
+            const password = document.getElementById('password').value;
+            const result = document.getElementById('passwordResult');
+            
+            if (!password) {
+                result.className = 'result warning';
+                result.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Please enter a password to check.';
+                result.style.display = 'block';
+                return;
+            }
+
+            let score = 0;
+            let feedback = [];
+
+            // Length check
+            if (password.length >= 12) {
+                score += 25;
+            } else if (password.length >= 8) {
+                score += 15;
+                feedback.push('Consider using at least 12 characters');
+            } else {
+                feedback.push('Password too short - use at least 8 characters');
+            }
+
+            // Character variety
+            if (/[a-z]/.test(password)) score += 10;
+            else feedback.push('Add lowercase letters');
+
+            if (/[A-Z]/.test(password)) score += 10;
+            else feedback.push('Add uppercase letters');
+
+            if (/[0-9]/.test(password)) score += 10;
+            else feedback.push('Add numbers');
+
+            if (/[^A-Za-z0-9]/.test(password)) score += 15;
+            else feedback.push('Add special characters (!@#$%^&*)');
+
+            // Common patterns
+            if (!/(.)\1{2,}/.test(password)) score += 10;
+            else feedback.push('Avoid repeating characters');
+
+            if (!/123|abc|qwe|password/i.test(password)) score += 10;
+            else feedback.push('Avoid common patterns');
+
+            // Display results
+            if (score >= 70) {
+                result.className = 'result safe';
+                result.innerHTML = '<i class="fas fa-check-circle"></i> <strong>STRONG PASSWORD!</strong> Your password meets security best practices.';
+            } else if (score >= 40) {
+                result.className = 'result warning';
+                result.innerHTML = `<i class="fas fa-exclamation-triangle"></i> <strong>MODERATE STRENGTH:</strong> Your password could be improved.<br><br>Suggestions: ${feedback.join(', ')}`;
+            } else {
+                result.className = 'result danger';
+                result.innerHTML = `<i class="fas fa-exclamation-triangle"></i> <strong>WEAK PASSWORD:</strong> This password is easily guessable.<br><br>Improvements needed: ${feedback.join(', ')}`;
+            }
+            
+            result.style.display = 'block';
+        }
+
+        // AI Chat Assistant
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+
+            addChatMessage(message, 'user');
+            input.value = '';
+
+            // Simulate AI response
+            setTimeout(() => {
+                const response = generateAIResponse(message.toLowerCase());
+                addChatMessage(response, 'bot');
+            }, 1000);
+        }
+
+        function handleChatKeypress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        function addChatMessage(message, sender) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `chat-message ${sender}`;
+            
+            if (sender === 'bot') {
+                messageDiv.innerHTML = `<i class="fas fa-robot"></i> ${message}`;
+            } else {
+                messageDiv.textContent = message;
+            }
+            
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function generateAIResponse(message) {
+            const responses = {
+                'password': 'For strong passwords, use at least 12 characters with a mix of uppercase, lowercase, numbers, and symbols. Consider using a passphrase like "Coffee&Sunrise2024!" or use a password manager.',
+                
+                'phishing': 'Phishing emails often use urgent language, ask for personal info, or contain suspicious links. Always verify the sender, check URLs carefully, and when in doubt, contact the company directly through official channels.',
+                
+                'backup': 'Follow the 3-2-1 backup rule: 3 copies of important data, on 2 different types of media, with 1 copy stored offsite. Cloud storage services like Google Drive or Dropbox work great for small businesses.',
+                
+                'antivirus': 'Yes! Use reputable antivirus software and keep it updated. Windows Defender is good for basic protection, but consider business solutions like Bitdefender or Norton for enhanced features.',
+                
+                'wifi': 'Secure your WiFi with WPA3 encryption, use a strong password, hide your network name (SSID), and set up a guest network for customers. Change default router passwords immediately.',
+                
+                'update': 'Keep all software updated! Enable automatic updates for your operating system, browsers, and business software. Updates often include critical security patches.',
+                
+                'email': 'For email security: use strong passwords, enable 2FA, be cautious with attachments, verify sender identities, and consider business email solutions like Microsoft 365 or Google Workspace.'
+            };
+
+            // Find matching response
+            for (let keyword in responses) {
+                if (message.includes(keyword)) {
+                    return responses[keyword];
+                }
+            }
+
+            // Default responses
+            const defaultResponses = [
+                'That\'s a great security question! Here are some key points: Always keep software updated, use strong unique passwords, be cautious with emails and links, and regularly backup your data.',
+                
+                'For small businesses, I recommend focusing on these basics: strong passwords + 2FA, regular backups, employee training, and keeping systems updated. What specific area would you like to know more about?',
+                
+                'Cybersecurity doesn\'t have to be complex! Start with password management, secure your WiFi, train your team to spot phishing, and backup important data. Need specific advice on any of these?'
+            ];
+
+            return defaultResponses[Math.floor(Math.random() * defaultResponses.length)];
+        }
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate security score
+            const scoreElement = document.getElementById('securityScore');
+            let currentScore = 0;
+            const targetScore = 75;
+            const increment = targetScore / 50;
+            
+            const scoreAnimation = setInterval(() => {
+                currentScore += increment;
+                if (currentScore >= targetScore) {
+                    currentScore = targetScore;
+                    clearInterval(scoreAnimation);
+                }
+                scoreElement.textContent = Math.round(currentScore);
+            }, 30);
+        });
+    </script>
+</body>
+</html>
